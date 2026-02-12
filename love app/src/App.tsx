@@ -1,183 +1,100 @@
-import { useState } from 'react';
-import { 
-  Home, CheckSquare, Calendar, PiggyBank, 
-  MessageCircle, Sparkles, Gift, Heart 
-} from 'lucide-react';
-import { useLoveData } from '@/hooks/useLoveData';
-import { Header } from '@/components/sections/Header';
-import { Dashboard } from '@/components/sections/Dashboard';
-import { Tasks } from '@/components/sections/Tasks';
-import { Anniversary } from '@/components/sections/Anniversary';
-import { Savings } from '@/components/sections/Savings';
-import { CheckIn } from '@/components/sections/CheckIn';
-import { Messages } from '@/components/sections/Messages';
-import { Wishes } from '@/components/sections/Wishes';
-import { Rewards } from '@/components/sections/Rewards';
+import { Heart, Home, MessageCircle, Sparkles, UserRound } from 'lucide-react';
 import './App.css';
 
-type TabType = 'home' | 'tasks' | 'anniversary' | 'savings' | 'messages' | 'checkin' | 'wishes' | 'rewards';
+type NavItem = {
+  id: string;
+  label: string;
+  icon: typeof Home;
+  active?: boolean;
+};
 
-const tabs: { key: TabType; label: string; icon: typeof Home }[] = [
-  { key: 'home', label: '首页', icon: Home },
-  { key: 'tasks', label: '任务', icon: CheckSquare },
-  { key: 'anniversary', label: '纪念日', icon: Calendar },
-  { key: 'savings', label: '储蓄', icon: PiggyBank },
-  { key: 'messages', label: '留言', icon: MessageCircle },
-  { key: 'checkin', label: '打卡', icon: Heart },
-  { key: 'wishes', label: '愿望', icon: Sparkles },
-  { key: 'rewards', label: '奖励', icon: Gift },
+const navItems: NavItem[] = [
+  { id: 'home', label: '首页', icon: Home, active: true },
+  { id: 'feed', label: '缘途', icon: MessageCircle },
+  { id: 'match', label: '配对', icon: Heart },
+  { id: 'profile', label: '我的', icon: UserRound },
+];
+
+const hobbies = [
+  { emoji: '☕', label: '咖啡' },
+  { emoji: '📖', label: '阅读' },
+  { emoji: '🎵', label: '音乐' },
 ];
 
 function App() {
-  const [activeTab, setActiveTab] = useState<TabType>('home');
-  const {
-    userState,
-    tasks,
-    anniversaries,
-    expenses,
-    savingsGoals,
-    checkIns,
-    messages,
-    wishes,
-    coupons,
-    achievements,
-    stats,
-    completeTask,
-    addTask,
-    deleteTask,
-    addAnniversary,
-    deleteAnniversary,
-    addExpense,
-    checkIn,
-    addMessage,
-    likeMessage,
-    addWish,
-    completeWish,
-    deleteWish,
-    useCoupon,
-  } = useLoveData();
-
-  const renderContent = () => {
-    switch (activeTab) {
-      case 'home':
-        return (
-          <>
-            <Dashboard stats={stats} />
-            <Tasks 
-              tasks={tasks.slice(0, 5)} 
-              onComplete={completeTask} 
-              onAdd={addTask} 
-              onDelete={deleteTask} 
-            />
-            <CheckIn 
-              checkIns={checkIns} 
-              onCheckIn={checkIn} 
-              todayCheckIn={stats.todayCheckIn} 
-            />
-          </>
-        );
-      case 'tasks':
-        return (
-          <Tasks 
-            tasks={tasks} 
-            onComplete={completeTask} 
-            onAdd={addTask} 
-            onDelete={deleteTask} 
-          />
-        );
-      case 'anniversary':
-        return (
-          <Anniversary 
-            anniversaries={anniversaries} 
-            onAdd={addAnniversary} 
-            onDelete={deleteAnniversary} 
-          />
-        );
-      case 'savings':
-        return (
-          <Savings 
-            expenses={expenses} 
-            savingsGoals={savingsGoals} 
-            onAddExpense={addExpense} 
-          />
-        );
-      case 'messages':
-        return (
-          <Messages 
-            messages={messages} 
-            onAdd={addMessage} 
-            onLike={likeMessage} 
-          />
-        );
-      case 'checkin':
-        return (
-          <CheckIn 
-            checkIns={checkIns} 
-            onCheckIn={checkIn} 
-            todayCheckIn={stats.todayCheckIn} 
-          />
-        );
-      case 'wishes':
-        return (
-          <Wishes 
-            wishes={wishes} 
-            onAdd={addWish} 
-            onComplete={completeWish} 
-            onDelete={deleteWish} 
-          />
-        );
-      case 'rewards':
-        return (
-          <Rewards 
-            userState={userState}
-            coupons={coupons}
-            achievements={achievements}
-            onUseCoupon={useCoupon}
-          />
-        );
-      default:
-        return null;
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50">
-      <Header userState={userState} />
-      
-      <main className="max-w-6xl mx-auto px-4 pb-24">
-        <div key={activeTab} className="animate-fade-in">
-          {renderContent()}
-        </div>
+    <div className="app-shell">
+      <main className="journal-screen">
+        <header className="title-area">
+          <span className="float-deco heart">💗</span>
+          <span className="float-deco star">✨</span>
+          <h1 className="title-pill">恋爱札记</h1>
+        </header>
+
+        <section className="board-grid">
+          <article className="note-card mint">
+            <span className="paper-tape top" />
+            <span className="paper-tape side" />
+            <h2 className="card-head">今日推荐</h2>
+            <div className="card-body">
+              <div className="profile-row">
+                <div className="avatar">小</div>
+                <div>
+                  <p className="name">小婷</p>
+                  <p className="age">24岁</p>
+                </div>
+              </div>
+
+              <div className="hobby-list">
+                {hobbies.map((hobby) => (
+                  <span key={hobby.label} className="hobby-chip" title={hobby.label}>
+                    {hobby.emoji}
+                  </span>
+                ))}
+              </div>
+
+              <div className="action-row">
+                <button type="button" className="action-btn pink">
+                  <Heart size={16} />
+                  接缘
+                </button>
+                <button type="button" className="action-btn blue">
+                  <MessageCircle size={16} />
+                  聊聊
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <article className="note-card sky">
+            <span className="paper-tape top" />
+            <span className="paper-tape corner" />
+            <h2 className="card-head">我的动态</h2>
+            <div className="card-body feed-body">
+              <div className="feed-post">
+                <div className="feed-thumb" />
+                <div>
+                  <p className="post-text">今天搬进了新房间，准备开始新的生活节奏。</p>
+                  <p className="post-meta">刚刚更新</p>
+                </div>
+              </div>
+              <div className="divider" />
+              <p className="notify-line">
+                <Sparkles size={14} />
+                小明接续了你的动态
+              </p>
+            </div>
+          </article>
+        </section>
       </main>
 
-      {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-lg border-t border-pink-100 safe-area-pb">
-        <div className="max-w-6xl mx-auto px-2">
-          <div className="flex justify-around py-2">
-            {tabs.map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
-                className={`flex flex-col items-center gap-0.5 px-2 py-1 rounded-xl transition-all hover-scale ${
-                  activeTab === tab.key
-                    ? 'text-rose-500'
-                    : 'text-gray-400 hover:text-gray-600'
-                }`}
-              >
-                <div className={`p-1.5 rounded-lg transition-all ${
-                  activeTab === tab.key
-                    ? 'bg-rose-100'
-                    : ''
-                }`}>
-                  <tab.icon className={`w-5 h-5 ${
-                    activeTab === tab.key ? 'fill-rose-100' : ''
-                  }`} />
-                </div>
-                <span className="text-[10px] font-medium">{tab.label}</span>
-              </button>
-            ))}
-          </div>
-        </div>
+      <nav className="bottom-nav">
+        {navItems.map((item) => (
+          <button key={item.id} type="button" className={`nav-item ${item.active ? 'active' : ''}`}>
+            <item.icon size={20} />
+            <span>{item.label}</span>
+          </button>
+        ))}
       </nav>
     </div>
   );
